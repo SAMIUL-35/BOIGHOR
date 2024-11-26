@@ -1,0 +1,31 @@
+
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mx-auto w-full max-w-2xl mt-4 px-4">
+  <h1 class="text-3xl font-semibold">Edit Profile</h1>
+  
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} mt-2" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="bg-gray-100 p-6 border border-green-500 text-gray-800">
+    <form method="post">
+      {% csrf_token %}
+      {{ form|crispy }}
+      
+      <div class="flex justify-between mt-4">
+        <button class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded" type="submit">Submit</button>  
+        <a href="{% url 'pass_change' user.id %}" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded">
+          Change Password
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock content %}

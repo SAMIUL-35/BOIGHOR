@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mx-auto my-4">
+  
+  <div class="flex flex-wrap">
+    <!-- Sidebar (User Info) -->
+    <div class="w-full md:w-1/3 p-4">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="p-4 mb-4 text-white 
+            {% if message.tags == 'error' %} bg-red-600 {% else %} bg-green-600 {% endif %} rounded">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="border border-green-500 p-4 bg-gray-100 rounded-lg shadow-md">
+        <p><strong>Username:</strong> {{ user.username|default:"N/A" }}</p>
+        <p><strong>Email:</strong> {{ user.email|default:"N/A" }}</p>
+        <a class="btn btn-success inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-2" href="{% url 'edit_profile' user.id %}">Edit Profile</a>
+      </div>
+    </div>
+
+    <!-- Purchased Cars -->
+    {% comment %} <div class="w-full md:w-2/3 p-4">
+      <h2 class="text-2xl font-bold mb-4">Your Purchased Cars</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for car in cars %}
+          <div class="flex flex-col items-stretch bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="relative h-56 w-full bg-gray-200">
+              <img src="{{ car.image.url }}" alt="{{ car.name }}" class="object-cover w-full h-full">
+            </div>
+            <div class="p-4 flex flex-col justify-between h-full">
+              <h5 class="text-xl font-semibold">{{ car.name }}</h5>
+              <p class="text-lg text-gray-700">Price: ${{ car.price }}</p>
+              <p class="text-lg text-gray-700">Brand: {{ car.brand }}</p>
+              <a href="{% url 'detail' car.id %}" class="mt-4 inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">View Details</a>
+            </div>
+          </div>
+        {% empty %}
+          <p class="text-center text-lg text-gray-500">No cars available in this brand.</p>
+        {% endfor %}
+      </div>
+    </div> {% endcomment %}
+  </div>
+</div>
+{% endblock content %}
