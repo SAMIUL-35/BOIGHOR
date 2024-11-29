@@ -37,3 +37,4 @@ sqlparse
 tqdm
 tzdata
 virtualenv
+dj-database-url
