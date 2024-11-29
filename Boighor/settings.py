@@ -1,4 +1,5 @@
 from pathlib import Path
+import dj_database_url
 import environ
 
 # Initialize environment variables
@@ -73,17 +74,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Boighor.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env("DB_NAME"),
-        'USER': env("DB_USER"),
-        'PASSWORD': env("DB_PASSWORD"),
-        'HOST': env("DB_HOST"),
-        'PORT': env("DB_PORT"),
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': env("DB_NAME"),
+#         'USER': env("DB_USER"),
+#         'PASSWORD': env("DB_PASSWORD"),
+#         'HOST': env("DB_HOST"),
+#         'PORT': env("DB_PORT"),
+#     }
+# }
+# Database documentation https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+DATABASES = {
+    'default': dj_database_url.config(
+        # Replace this value with your local database's connection string.
+        default='postgresql://boighor_user:A0S52Y5Bmd6XnLHTAGgKeIoCaPptUmvH@dpg-ct4ijj1opnds73d2eql0-a.oregon-postgres.render.com/boighor',
+        
+    )
+}
 # Static and Media files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
