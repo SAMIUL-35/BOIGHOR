@@ -1,30 +1,20 @@
-"""
-URL configuration for Boighor project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+# In your urls.py
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path,include
-from core.views import HomeView
+from django.urls import path, include
+from core.views import Home
 
 urlpatterns = [
-     path('', HomeView.as_view(), name='home'),
+    path('', Home, name='home'),  # Default homepage view
+    path('category/<slug:slug>/', Home, name='home'),  # Category-specific view (optional slug)
     path('admin/', admin.site.urls),
-     path('accounts/', include('accounts.urls')),
+    path('accounts/', include('accounts.urls')),
+    path('reviews/', include('reviews.urls')),
+    path('book/', include('Book.urls')),
+    path('transaction/', include('transaction.urls')),
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

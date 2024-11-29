@@ -1,23 +1,96 @@
-{% extends 'base.html' %} 
-{% load static %} 
+{% extends 'base.html' %}
+{% load static %}
 
-{% block head_title %}BOIGHOR{% endblock %} {% block content %}
-<div class="container mx-auto flex flex-col md:flex-row items-center my-12 md:my-24">
+{% block head_title %}BOIGHOR{% endblock %}
 
-    
-    <div class="flex flex-col w-full lg:w-1/2 justify-center items-start pt-12 pb-24 px-6 bg-white rounded-2xl bg-opacity-70 mx-3">
-        <h1 class="font-bold text-4xl my-4">Welcome to Mamar Bank</h1>
-        <p class="leading-normal mb-4">
-            This is a simple Mamar Bank where you can deposit money, withdraw money, take loan. You can also create an account, login, logout. Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed nemo quaerat quo dicta, adipisci eum fuga ratione id numquam eius veniam placeat voluptatum, itaque tempora molestias vel, blanditiis fugiat ipsam!
-
+{% block content %}
+<div 
+    class="container mx-auto flex flex-col items-center justify-center mb-10 my-12 md:my-24 bg-cover bg-center bg-no-repeat py-16 px-4"
+    style="background-image: url('{% static "img/banner.jpeg" %}');"
+>
+    <div class="bg-white bg-opacity-75 p-6 rounded-2xl shadow-lg max-w-lg text-center">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Welcome to Boighor</h1>
+        <p class="text-gray-600 leading-relaxed">
+            Boighor is your ultimate destination for exploring a wide range of books across various genres. 
+            From timeless classics to modern masterpieces, we offer something for every book lover. 
+            Visit us to discover a cozy place where stories come alive and imaginations soar.
         </p>
-        <div class="flex justify-end w-full">
-            <a href="{% url 'register' %}" class="bg-blue-900 text-white rounded-none hover:bg-white hover:text-blue-900 hover:border-blue-900 shadow hover:shadow-lg py-2 px-4 border border-gray-900 hover:border-transparent">Register</a>
-        </div>
-    </div>
-    <div class="w-full lg:w-1/2 lg:py-6 text-center ">
-        <img class ="rounded-2xl" src ="{% static './img/bank.jpg' %}"/>
     </div>
 </div>
+<h3 class="text-center text-3xl font-extrabold text-gray-700 mb-8">
+    Our Book Collection
+</h3>
+<div class="container mx-auto mb-20 my-8 px-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        
+        <!-- Left Sidebar for Categories -->
+        <aside class="col-span-1 ps-6 ms-5">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">Categories</h3>
+            <div class="bg-white p-4 rounded-lg shadow-md border border-gray-300">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="{% url 'home' %}" 
+                           class="block text-gray-800 hover:text-blue-600 {% if not selected_category %}font-bold{% else %}normal{% endif %}">
+                            All Books
+                        </a>
+                    </li>
+                    {% for category in categories %}
+                    <li>
+                        <a href="{% url 'home' slug=category.slug %}" 
+                           class="block text-gray-800 hover:text-blue-600 {% if category == selected_category %}font-bold{% else %}normal{% endif %}">
+                            {{ category.name }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+        
+        
 
+        <!-- Right Content for Books -->
+        <main class="col-span-1 md:col-span-3">
+             
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {% for book in data %}
+                    <div class="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                        <div class="h-48 overflow-hidden">
+                            <img 
+                                src="{{ book.image.url }}" 
+                                alt="{{ book.title }}" 
+                                class="w-full h-full object-cover"
+                            >
+                        </div>
+                        <div class="p-4 flex flex-col h-full">
+                            <h5 class="text-xl font-bold text-gray-800">{{ book.title }}</h5>
+                            <p class="text-gray-700 font-semibold text-lg mt-2">
+                                Price: ${{ book.borrowing_price }}
+                            </p>
+                            
+                            <p class="text-gray-700 font-semibold text-lg mt-2">
+                                Category: <span class="font-medium">{{ book.category.name }}</span>
+                            </p>
+                            
+                            
+                            
+                            <!-- Only View Details Button -->
+                            <div class="mt-4 flex justify-center">
+                                <a href="{% url 'detail' book.id %}" 
+                                class="block w-full bg-blue-400 text-dark py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300 transform hover:scale-105 text-center">
+                                 View Details
+                             </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-center text-gray-500 text-lg col-span-full">
+                        No books available in this category.
+                    </p>  
+                {% endfor %}
+            </div>
+            
+        </main>
+    </div>
+</div>
 {% endblock %}

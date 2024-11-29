@@ -1,50 +1,104 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
+
+{% block head_title %}Profile{% endblock %}
 
 {% block content %}
-<div class="container mx-auto my-4">
-  
-  <div class="flex flex-wrap">
-    <!-- Sidebar (User Info) -->
-    <div class="w-full md:w-1/3 p-4">
-      {% if messages %}
-        {% for message in messages %}
-          <div class="p-4 mb-4 text-white 
-            {% if message.tags == 'error' %} bg-red-600 {% else %} bg-green-600 {% endif %} rounded">
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
+<div class="container mx-auto my-12 px-4">
+    <h1 class="text-3xl font-bold text-gray-800 text-center mb-8">Profile</h1>
 
-      <div class="border border-green-500 p-4 bg-gray-100 rounded-lg shadow-md">
-        <p><strong>Username:</strong> {{ user.username|default:"N/A" }}</p>
-        <p><strong>Email:</strong> {{ user.email|default:"N/A" }}</p>
-        <a class="btn btn-success inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mt-2" href="{% url 'edit_profile' user.id %}">Edit Profile</a>
-      </div>
+    <!-- Displaying the user's borrowed books in a table -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Borrowed Books List</h2>
+
+        <!-- Table for displaying borrowed books -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white shadow-md rounded-lg border border-gray-200">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="py-2 px-4 text-left text-gray-700">ID</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Book Name</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Price</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Date Borrowed</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Balance</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Balance After Transaction</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                        <!-- Only show books that are still borrowed -->
+                        {% if book.is_borrowed and book.borrowed_by == request.user %}
+                            <tr class="border-t">
+                                <td class="py-2 px-4">{{ book.id }}</td>
+                                <td class="py-2 px-4">{{ book.title }}</td>
+                                <td class="py-2 px-4">{{ book.borrowing_price }}</td>
+                                <td class="py-2 px-4">{{ book.created_at|date:"F j, Y" }}</td>
+                                <td class="py-2 px-4">{{ user.account.balance }}</td>
+                                <td class="py-2 px-4">
+                                    {% if book.transactions.all %}
+                                        <span class="block">{{ book.transactions.last.balance_after_transaction }}</span>
+                                    {% else %}
+                                        <span class="text-gray-500">No transactions yet</span>
+                                    {% endif %}
+                                </td>
+                                
+                                <td class="py-2 px-4">
+                                    <!-- Return Book Button -->
+                                    <a href="{% url 'return_book' book.id %}" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded">
+                                        Return Book
+                                    </a>
+
+                                    <!-- Review Button -->
+                                    <a href="{% url 'review_book' book.id %}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded ml-2">
+                                        Review Book
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="py-4 px-4 text-center text-gray-500">No borrowed books.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- Purchased Cars -->
-    {% comment %} <div class="w-full md:w-2/3 p-4">
-      <h2 class="text-2xl font-bold mb-4">Your Purchased Cars</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for car in cars %}
-          <div class="flex flex-col items-stretch bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="relative h-56 w-full bg-gray-200">
-              <img src="{{ car.image.url }}" alt="{{ car.name }}" class="object-cover w-full h-full">
-            </div>
-            <div class="p-4 flex flex-col justify-between h-full">
-              <h5 class="text-xl font-semibold">{{ car.name }}</h5>
-              <p class="text-lg text-gray-700">Price: ${{ car.price }}</p>
-              <p class="text-lg text-gray-700">Brand: {{ car.brand }}</p>
-              <a href="{% url 'detail' car.id %}" class="mt-4 inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">View Details</a>
-            </div>
-          </div>
-        {% empty %}
-          <p class="text-center text-lg text-gray-500">No cars available in this brand.</p>
-        {% endfor %}
-      </div>
-    </div> {% endcomment %}
-  </div>
+    <!-- Displaying the user's transaction history -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold text-gray-700">Transaction History</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white shadow-md rounded-lg border border-gray-200">
+                <thead>
+                    <tr class="bg-gray-100">
+                      
+                        <th class="py-2 px-4 text-left text-gray-700">Description</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Amount</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Balance After Transaction</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Timestamp</th>
+                     
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                        <tr class="border-t">
+                          
+                            <td class="py-2 px-4">{{ transaction.description }}</td>
+                            <td class="py-2 px-4">{{ transaction.amount }}</td>
+                            <td class="py-2 px-4">{{ transaction.balance_after_transaction }}</td>
+                            <td class="py-2 px-4">{{ transaction.timestamp }}</td>
+                          
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="py-4 px-4 text-center text-gray-500">No transactions found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-{% endblock content %}
+{% endblock %}

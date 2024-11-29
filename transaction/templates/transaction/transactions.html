@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_title %}Transaction History{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto my-12 px-4">
+        <h1 class="text-3xl font-bold text-gray-800 text-center mb-8">Transaction History</h1>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white shadow-md rounded-lg border border-gray-200">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="py-2 px-4 text-left text-gray-700">Username</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Book Title</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Description</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Amount</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Balance After Transaction</th>
+                        <th class="py-2 px-4 text-left text-gray-700">Timestamp</th>
+                    
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr class="border-t">
+                       
+                        <td class="py-2 px-4">{{ transaction.account.user.username }}</td>
+
+                        
+                        <td class="py-2 px-4">
+                            {% if transaction.book %}
+                                {{ transaction.book.title }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td class="py-2 px-4">{{ transaction.description }}</td>
+                        <td class="py-2 px-4">{{ transaction.amount }}</td>
+                        <td class="py-2 px-4">{{ transaction.balance_after_transaction }}</td>
+                        <td class="py-2 px-4">{{ transaction.timestamp }}</td>
+
+
+                        
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="py-4 px-4 text-center text-gray-500">No transactions found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
