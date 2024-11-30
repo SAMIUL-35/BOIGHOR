@@ -21,9 +21,12 @@ class DetailView(DetailView):
 
         # Fetch the reviews for the book
         reviews = Review.objects.filter(book=book).order_by('-created_at')
+        can_review = self.request.user.is_authenticated and book.borrowed_by ==self. request.user
+
         
         # Add reviews to the context
         context['reviews'] = reviews
+        context['can_review'] = can_review
 
         return context
 

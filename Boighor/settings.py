@@ -2,9 +2,9 @@ from pathlib import Path
 import dj_database_url
 import environ
 
-# Initialize environment variables
+
 env = environ.Env(
-    DEBUG=(bool, False)  # Default DEBUG to False
+    DEBUG=(bool, False)  
 )
 
 # Read .env file
@@ -19,6 +19,12 @@ DEBUG = env("DEBUG")
 
 # Allowed Hosts
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost',
+    'http://127.0.0.1',
+    'https://boighor-t9o1.onrender.com', 
+]
+
 
 # Installed Apps
 INSTALLED_APPS = [

@@ -64,12 +64,13 @@
                         </div>
                         <div class="p-4 flex flex-col h-full">
                             <h5 class="text-xl font-bold text-gray-800">{{ book.title }}</h5>
-                            <p class="text-gray-700 font-semibold text-lg mt-2">
-                                Price: ${{ book.borrowing_price }}
-                            </p>
+                            
                             
                             <p class="text-gray-700 font-semibold text-lg mt-2">
-                                Category: <span class="font-medium">{{ book.category.name }}</span>
+                                 <span class="font-medium">{{ book.category.name }}</span>
+                            </p>
+                            <p class="text-gray-700 font-semibold text-lg mt-2">
+                                Price: ${{ book.borrowing_price }}
                             </p>
                             
                             

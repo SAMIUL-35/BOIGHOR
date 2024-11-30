@@ -1,10 +1,9 @@
-from django.apps import apps
 from django.contrib.auth.models import User
+from django.db import models
+from django.apps import apps
 import random
-from django.db import models  # Correct import statement
+from Book.models import BookModel
 
-
-from Book.models import BookModel 
 
 class UserDepositAccount(models.Model):
     user = models.OneToOneField(User, related_name='account', on_delete=models.CASCADE)
@@ -13,7 +12,6 @@ class UserDepositAccount(models.Model):
     initial_deposite_date = models.DateField(auto_now_add=True)
 
     def generate_account_no(self):
-        """Generate a unique account number."""
         while True:
             account_no = random.randint(100000, 999999)
             if not UserDepositAccount.objects.filter(account_no=account_no).exists():
@@ -25,7 +23,6 @@ class UserDepositAccount(models.Model):
         super().save(*args, **kwargs)
 
     def deposit(self, amount):
-        """Method to deposit funds."""
         Transaction = apps.get_model('transaction', 'Transaction')
         if amount <= 0:
             raise ValueError("Deposit amount must be positive.")
@@ -39,7 +36,6 @@ class UserDepositAccount(models.Model):
         )
 
     def borrow_book(self, book):
-        """Method to borrow a book."""
         Transaction = apps.get_model('transaction', 'Transaction')
         if book.borrowing_price > self.balance:
             raise ValueError(f"Insufficient balance to borrow the book '{book.title}'.")
@@ -47,20 +43,19 @@ class UserDepositAccount(models.Model):
         self.save()
         Transaction.objects.create(
             account=self,
-            book=book,  # Link the book to the transaction
+            book=book,
             description=f"Borrowed book: {book.title}",
             amount=-book.borrowing_price,
             balance_after_transaction=self.balance
         )
 
     def return_book(self, book):
-        """Method to return a borrowed book."""
         Transaction = apps.get_model('transaction', 'Transaction')
         self.balance += book.borrowing_price
         self.save()
         Transaction.objects.create(
             account=self,
-            book=book,  # Link the book to the transaction
+            book=book,
             description=f"Returned book: {book.title}",
             amount=book.borrowing_price,
             balance_after_transaction=self.balance
