@@ -10,15 +10,15 @@
             <img 
                 src="{{ object.image.url|default_if_none:'/static/default-image.jpg' }}" 
                 alt="{{ object.title }}" 
-                class="card-img-top w-full object-contain"
+                class="card-img-top w-full object-contain max-h-72"  <!-- Reduced image height -->
             >
         </div>
 
         <!-- Content Section -->
-        <div class="card bg-green-100 shadow-md rounded-lg">
-            <div class="card-body p-12">
+        <div class="card bg-green-100 shadow-md rounded-lg h-full">
+            <div class="card-body p-6">  <!-- Reduced padding -->
                 <!-- Title -->
-                <h1 class="card-title text-3xl font-bold mb-4 text-center text-gray-800">
+                <h1 class="card-title text-2xl font-bold mb-4 text-center text-gray-800"> <!-- Adjusted font size -->
                     {{ object.title }}
                 </h1>
 
@@ -51,65 +51,62 @@
         </div>
     </div>
 
-
     <!-- Reviews Section -->
-<div class="mt-12 max-w-6xl mx-auto mb-12">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">Reviews</h2>
+    <div class="mt-12 max-w-6xl mx-auto mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Reviews</h2>
 
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Reviews Section (Left Column) -->
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-4">User Reviews:</h4>
-                <div class="comments-section" style="max-height: 300px; overflow-y: auto;">
-                    <ul class="list-unstyled">
-                        {% for review in reviews %}
-                            <li class="mb-3 p-1 border rounded comment-box">
-                                <strong>{{ review.user.email }}:</strong> {{ review.review_text }} <br>
-                                <small class="text-muted">({{ review.created_at|date:"F j, Y" }})</small>
-                            </li>
-                        {% endfor %}
-                    </ul>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Reviews Section (Left Column) -->
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">User Reviews:</h4>
+                    <div class="comments-section" style="max-height: 300px; overflow-y: auto;">
+                        <ul class="list-unstyled">
+                            {% for review in reviews %}
+                                <li class="mb-3 p-1 border rounded comment-box">
+                                    <strong>{{ review.user.email }}:</strong> {{ review.review_text }} <br>
+                                    <small class="text-muted">({{ review.created_at|date:"F j, Y" }})</small>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Review Form (Right Column) -->
-        <!-- Review Form (Right Column) -->
-<div class="card">
-    <div class="card-body">
-        {% if can_review %}
-            <h3 class="card-title mb-4">Add Your Review</h3>
-            <form method="post" action="{% url 'review_book' object.id %}" class="flex items-center gap-2">
-                {% csrf_token %}
-                <div class="flex w-full">
-                    <!-- Textarea -->
-                    <textarea 
-                        name="review_text" 
-                        rows="2" 
-                        class="form-control flex-grow p-2 rounded-l border border-gray-300" 
-                        placeholder="Write your review here..." 
-                        style="resize: none; width: 100%;"
-                    ></textarea>
+            <!-- Review Form (Right Column) -->
+            <div class="card">
+                <div class="card-body">
+                    {% if can_review %}
+                        <h3 class="card-title mb-4">Add Your Review</h3>
+                        <form method="post" action="{% url 'review_book' object.id %}" class="flex items-center gap-2">
+                            {% csrf_token %}
+                            <div class="flex w-full">
+                                <!-- Textarea -->
+                                <textarea 
+                                    name="review_text" 
+                                    rows="2" 
+                                    class="form-control flex-grow p-2 rounded-l border border-gray-300" 
+                                    placeholder="Write your review here..." 
+                                    style="resize: none; width: 100%;"
+                                ></textarea>
 
-                    <!-- Submit Button -->
-                    <button 
-                        type="submit" 
-                        class="btn bg-blue-500 text-white px-4 rounded-r border border-blue-500 hover:bg-blue-600"
-                    >
-                        Submit
-                    </button>
+                                <!-- Submit Button -->
+                                <button 
+                                    type="submit" 
+                                    class="btn bg-blue-500 text-white px-4 rounded-r border border-blue-500 hover:bg-blue-600"
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <p class="mt-4 text-gray-600">You must borrow the book to add a review.</p>
+                    {% endif %}
                 </div>
-            </form>
-        {% else %}
-            <p class="mt-4 text-gray-600">You must borrow the book to add a review.</p>
-        {% endif %}
-    </div>
-</div>
+            </div>
 
+        </div>
     </div>
-</div>
 
 </div>
 {% endblock content %}
