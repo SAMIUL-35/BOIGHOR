@@ -42,7 +42,7 @@
                 <form method="post" action="{% url 'borrow_book' object.id %}">
                     {% csrf_token %}
                     <button type="submit" 
-                            class="btn btn-primary w-full text-xl py-2">
+                            class="btn btn-primary bg-blue-400 w-full text-xl py-2">
                         Borrow Now
                     </button>
                 </form>
