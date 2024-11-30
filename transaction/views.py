@@ -34,17 +34,18 @@ def deposit_view(request):
         amount = form.cleaned_data['amount']
         try:
             account.deposit(amount)
-            send_transaction_email(
-                user=request.user,
-                amount=amount,
-                subject="Deposit Confirmation",
-                template="transaction/deposit_email.html"
-            )
+           
             return render(request, 'transaction/deposit.html', {
                 'form': DepositForm(),
                 'account': account,
                 'success_message': f"Successfully deposited ${amount}"
-            })
+            }
+             send_transaction_email(
+                user=request.user,
+                amount=amount,
+                subject="Deposit Confirmation",
+                template="transaction/deposit_email.html"
+            ))
         except Exception as e:
             error_message = str(e)
     return render(request, 'transaction/deposit.html', {
@@ -98,10 +99,8 @@ def return_book_view(request, book_id):
     book = get_object_or_404(BookModel, id=book_id)
 
     if book.borrowed_by != request.user:
-        return JsonResponse(
-            {"error": f"You cannot return '{book.title}' because it is not borrowed by you."},
-            status=403
-        )
+        messages.success(request, f"You cannot return '{book.title}' because it is not borrowed by you")
+        return redirect('profile')
 
     try:
         account.balance += book.borrowing_price
