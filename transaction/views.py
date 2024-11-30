@@ -19,6 +19,8 @@ def send_transaction_email(user, amount, subject, template):
     except Exception as e:
         print(f"Failed to send email: {str(e)}")
 
+from django.contrib import messages
+
 @login_required
 def deposit_view(request):
     try:
@@ -29,19 +31,22 @@ def deposit_view(request):
         })
 
     form = DepositForm(request.POST or None)
-    error_message = None
     if request.method == 'POST' and form.is_valid():
         amount = form.cleaned_data['amount']
+        if amount <= 0:
+            messages.error(request, "Amount must be greater than zero.")
+            return render(request, 'transaction/deposit.html', {
+                'form': form,
+                'account': account,
+            })
+
         try:
+        
             account.deposit(amount)
             
-            # Render the response first, then call send_transaction_email
-            response = render(request, 'transaction/deposit.html', {
-                'form': DepositForm(),
-                'account': account,
-                'success_message': f"Successfully deposited ${amount}"
-            })
             
+            messages.success(request, f"Successfully deposited ${amount}. Your new balance is ${account.balance}.")
+
             # Send the confirmation email
             send_transaction_email(
                 user=request.user,
@@ -49,17 +54,15 @@ def deposit_view(request):
                 subject="Deposit Confirmation",
                 template="transaction/deposit_email.html"
             )
-            
-            # Return the response after sending the email
-            return response
+
+            return redirect('deposit')  # Redirect after POST to avoid resubmission
 
         except Exception as e:
-            error_message = str(e)
-    
+            messages.error(request, str(e))
+
     return render(request, 'transaction/deposit.html', {
         'form': form,
         'account': account,
-        'error_message': error_message
     })
 
 @login_required
