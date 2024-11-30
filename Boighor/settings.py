@@ -100,11 +100,18 @@ DATABASES = {
     )
 }
 # Static and Media files
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [BASE_DIR / "static"]
+# STATIC_ROOT = BASE_DIR / "static_root"
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / "media_root"
+# # # settings.py
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / "static_root"
+STATICFILES_DIRS = [ BASE_DIR / "static" ]
+STATIC_ROOT = "static_root"
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / "media_root"
+MEDIA_ROOT = "media_root"
+
 
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
