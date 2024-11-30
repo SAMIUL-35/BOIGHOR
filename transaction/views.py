@@ -120,10 +120,9 @@ def return_book_view(request, book_id):
             subject="Book Returned",
             template="transaction/return_email.html"
         )
-        return JsonResponse(
-            {"success": f"Successfully returned '{book.title}'."},
-            status=200
-        )
+       
+        messages.success(request, f"You have successfully returned the book '{book.title}'.")
+        return redirect('profile')
     except Exception as e:
         return JsonResponse(
             {"error": f"An error occurred while returning the book: {str(e)}"},
