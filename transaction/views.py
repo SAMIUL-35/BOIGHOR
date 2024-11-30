@@ -6,6 +6,9 @@ from django.apps import apps
 from .models import UserDepositAccount
 from .forms import DepositForm
 from Book.models import BookModel
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
 
 def send_transaction_email(user, amount, subject, template):
     try:
