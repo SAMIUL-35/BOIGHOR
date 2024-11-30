@@ -34,20 +34,28 @@ def deposit_view(request):
         amount = form.cleaned_data['amount']
         try:
             account.deposit(amount)
-           
-            return render(request, 'transaction/deposit.html', {
+            
+            # Render the response first, then call send_transaction_email
+            response = render(request, 'transaction/deposit.html', {
                 'form': DepositForm(),
                 'account': account,
                 'success_message': f"Successfully deposited ${amount}"
-            }
-             send_transaction_email(
+            })
+            
+            # Send the confirmation email
+            send_transaction_email(
                 user=request.user,
                 amount=amount,
                 subject="Deposit Confirmation",
                 template="transaction/deposit_email.html"
-            ))
+            )
+            
+            # Return the response after sending the email
+            return response
+
         except Exception as e:
             error_message = str(e)
+    
     return render(request, 'transaction/deposit.html', {
         'form': form,
         'account': account,
